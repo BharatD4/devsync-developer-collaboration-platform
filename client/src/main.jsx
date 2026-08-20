@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import "./styles.css";
 
-const API = "http://localhost:5000/api";
+const API = "https://devsync-developer-collaboration-platform.onrender.com/api";
 const api = axios.create({ baseURL: API });
 api.interceptors.request.use(c => {
   const t = localStorage.getItem("devsync_token");
@@ -730,7 +730,7 @@ function Chat({projects,selected}) {
   const [project, setProject] = useState(selected?._id || projects[0]?._id || "");
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
-  const [socket] = useState(() => socketIO("http://localhost:5000"));
+  const [socket] = useState(() => socketIO("https://devsync-developer-collaboration-platform.onrender.com"));
   useEffect(()=>{if(selected)setProject(selected._id)},[selected]);
   const load=async()=>{if(project){const r=await api.get("/messages?project="+project);setMessages(r.data)}}; useEffect(()=>{load(); if(project){socket.emit("join-project",project);}},[project]);
   useEffect(()=>{ const handler=(msg)=>setMessages(prev=>prev.some(x=>x._id===msg._id)?prev:[...prev,msg]); socket.on("project-message",handler); return ()=>socket.off("project-message",handler);},[socket]);
